@@ -1,0 +1,603 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit Profile - Student Portal</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        body {
+            margin: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            min-height: 100vh;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        /* ====================== LEFT SIDEBAR ====================== */
+        .sidebar {
+            width: 260px;
+            background: linear-gradient(180deg, #4c5bd4 0%, #3a47b3 100%);
+            height: 100vh;
+            color: white;
+            position: fixed;
+            left: 0;
+            top: 0;
+            padding: 25px 20px;
+            box-shadow: 4px 0 15px rgba(0, 0, 0, 0.15);
+            z-index: 1000;
+        }
+
+        .sidebar-header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .sidebar-header h2 {
+            margin: 0;
+            font-size: 24px;
+            font-weight: 600;
+        }
+
+        .sidebar-header p {
+            margin: 5px 0 0;
+            opacity: 0.9;
+            font-size: 14px;
+        }
+
+        .menu {
+            margin-top: 20px;
+        }
+
+        .menu-item {
+            display: flex;
+            align-items: center;
+            color: white;
+            text-decoration: none;
+            padding: 12px 15px;
+            margin: 8px 0;
+            background: rgba(255, 255, 255, 0.08);
+            border-radius: 10px;
+            transition: all 0.3s ease;
+            font-size: 15px;
+            font-weight: 500;
+        }
+
+        .menu-item:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: translateX(5px);
+            text-decoration: none;
+            color: white;
+        }
+
+        .menu-item.active {
+            background: rgba(255, 255, 255, 0.2);
+            border-left: 4px solid white;
+        }
+
+        .menu-item i {
+            margin-right: 12px;
+            font-size: 18px;
+            width: 24px;
+            text-align: center;
+        }
+
+        .logout-item {
+            margin-top: 30px;
+            background: rgba(220, 53, 69, 0.2);
+            border: 1px solid rgba(220, 53, 69, 0.3);
+        }
+
+        .logout-item:hover {
+            background: rgba(220, 53, 69, 0.3);
+        }
+
+        /* ====================== MAIN CONTENT ====================== */
+        .main-content {
+            margin-left: 260px;
+            padding: 40px;
+            min-height: 100vh;
+        }
+
+        .container-fluid {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        /* ====================== HEADER ====================== */
+        .page-header {
+            margin-bottom: 40px;
+            padding-bottom: 20px;
+            border-bottom: 2px solid #eaeaea;
+        }
+
+        .page-header h1 {
+            font-size: 32px;
+            font-weight: 600;
+            color: #333;
+            margin: 0;
+        }
+
+        .page-header p {
+            color: #666;
+            font-size: 16px;
+            margin-top: 10px;
+        }
+
+        /* ====================== PROFILE CARD ====================== */
+        .profile-card {
+            background: white;
+            border-radius: 15px;
+            padding: 40px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            border: none;
+            margin-bottom: 30px;
+            transition: all 0.3s ease;
+        }
+
+        .profile-card:hover {
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.15);
+        }
+
+        .profile-header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .profile-header h2 {
+            color: #4c5bd4;
+            font-weight: 600;
+            margin-bottom: 10px;
+        }
+
+        .profile-header p {
+            color: #666;
+            font-size: 16px;
+        }
+
+        /* ====================== AVATAR SECTION ====================== */
+        .avatar-section {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .avatar-preview {
+            width: 160px;
+            height: 160px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 5px solid #f0f2f5;
+            margin-bottom: 20px;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+        }
+
+        .avatar-preview:hover {
+            transform: scale(1.05);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+        }
+
+        .avatar-upload-btn {
+            background: #4c5bd4;
+            color: white;
+            border: none;
+            padding: 10px 25px;
+            border-radius: 8px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .avatar-upload-btn:hover {
+            background: #3a47b3;
+            transform: translateY(-2px);
+        }
+
+        /* ====================== FORM STYLING ====================== */
+        .form-section {
+            margin-bottom: 30px;
+        }
+
+        .form-label {
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .form-label i {
+            color: #4c5bd4;
+        }
+
+        .form-control, .form-select {
+            padding: 12px 15px;
+            border-radius: 10px;
+            border: 1px solid #ced4da;
+            font-size: 16px;
+            transition: all 0.3s ease;
+        }
+
+        .form-control:focus, .form-select:focus {
+            border-color: #4c5bd4;
+            box-shadow: 0 0 0 0.25rem rgba(76, 91, 212, 0.25);
+            outline: none;
+        }
+
+        .input-group {
+            position: relative;
+        }
+
+        .input-group-text {
+            background-color: #f8f9fa;
+            border: 1px solid #ced4da;
+            border-right: none;
+            color: #4c5bd4;
+        }
+
+        /* ====================== BUTTONS ====================== */
+        .action-buttons {
+            display: flex;
+            gap: 15px;
+            margin-top: 40px;
+        }
+
+        .btn-primary {
+            background-color: #4c5bd4;
+            border-color: #4c5bd4;
+            padding: 12px 30px;
+            border-radius: 10px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+
+        .btn-primary:hover {
+            background-color: #3a47b3;
+            border-color: #3a47b3;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(76, 91, 212, 0.3);
+        }
+
+        .btn-outline-primary {
+            color: #4c5bd4;
+            border-color: #4c5bd4;
+            padding: 12px 30px;
+            border-radius: 10px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+
+        .btn-outline-primary:hover {
+            background-color: #4c5bd4;
+            border-color: #4c5bd4;
+            transform: translateY(-2px);
+        }
+
+        /* ====================== ANIMATIONS ====================== */
+        .fade-in {
+            opacity: 0;
+            transform: translateY(20px);
+            transition: all 0.6s ease-out;
+        }
+
+        .fade-in.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* ====================== RESPONSIVE ====================== */
+        @media (max-width: 992px) {
+            .sidebar {
+                width: 70px;
+                padding: 20px 10px;
+            }
+            
+            .sidebar-header h2,
+            .sidebar-header p,
+            .menu-item span {
+                display: none;
+            }
+            
+            .menu-item {
+                justify-content: center;
+                padding: 12px;
+            }
+            
+            .menu-item i {
+                margin-right: 0;
+                font-size: 20px;
+            }
+            
+            .main-content {
+                margin-left: 70px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .main-content {
+                padding: 20px;
+            }
+            
+            .profile-card {
+                padding: 25px;
+            }
+            
+            .action-buttons {
+                flex-direction: column;
+            }
+            
+            .btn-primary, .btn-outline-primary {
+                width: 100%;
+            }
+        }
+
+        /* ====================== FILE UPLOAD ====================== */
+        .file-upload-container {
+            border: 2px dashed #ced4da;
+            border-radius: 10px;
+            padding: 30px;
+            text-align: center;
+            background: #f8f9fa;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .file-upload-container:hover {
+            border-color: #4c5bd4;
+            background: rgba(76, 91, 212, 0.05);
+        }
+
+        .file-upload-container i {
+            font-size: 48px;
+            color: #4c5bd4;
+            margin-bottom: 15px;
+        }
+
+        .file-upload-container p {
+            margin: 10px 0;
+            color: #666;
+        }
+
+        .file-upload-container small {
+            color: #999;
+        }
+    </style>
+</head>
+<body>
+    <!-- ====================== SIDEBAR ====================== -->
+    <div class="sidebar">
+        <div class="sidebar-header">
+            <h2><i class="fas fa-graduation-cap me-2"></i>Dashboard</h2>
+            <p>Student Portal</p>
+        </div>
+        
+        <div class="menu">
+            <a href="dashboard.html" class="menu-item">
+                <i class="fas fa-home"></i>
+                <span>Home</span>
+            </a>
+            <a href="#coursesSection" class="menu-item">
+                <i class="fas fa-book"></i>
+                <span>Courses</span>
+            </a>
+            <a href="#scheduleSection" class="menu-item">
+                <i class="fas fa-calendar-alt"></i>
+                <span>Schedule</span>
+            </a>
+            <a href="profile.html" class="menu-item active">
+                <i class="fas fa-user"></i>
+                <span>Profile</span>
+            </a>
+            <a href="#" class="menu-item logout-item" id="logout">
+                <i class="fas fa-sign-out-alt"></i>
+                <span>Logout</span>
+            </a>
+        </div>
+    </div>
+
+    <!-- ====================== MAIN CONTENT ====================== -->
+    <div class="main-content">
+        <div class="container-fluid">
+            <!-- Page Header -->
+            <div class="page-header fade-in">
+                <h1><i class="fas fa-user-edit me-3"></i>Edit Profile</h1>
+                <p>Update your personal information and profile picture</p>
+            </div>
+
+            <!-- Profile Card -->
+            <div class="profile-card fade-in">
+                <div class="profile-header">
+                    <h2>Personal Information</h2>
+                    <p>Make changes to your profile details below</p>
+                </div>
+
+                <!-- Avatar Section -->
+                <div class="avatar-section fade-in">
+                    <img id="avatarPreviewProfile" src="https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png" 
+                         class="avatar-preview" alt="Profile Avatar">
+                    
+                    <div class="mt-4">
+                        <div class="file-upload-container" onclick="document.getElementById('avatarProfile').click()">
+                            <i class="fas fa-cloud-upload-alt"></i>
+                            <p>Click to upload profile picture</p>
+                            <small>JPG, PNG or GIF (Max 2MB)</small>
+                        </div>
+                        <input type="file" id="avatarProfile" accept="image/*" style="display: none;">
+                    </div>
+                </div>
+
+                <!-- Profile Form -->
+                <form id="profileForm">
+                    <div class="row">
+                        <div class="col-md-6 form-section fade-in">
+                            <label for="fNameProfile" class="form-label">
+                                <i class="fas fa-user"></i>First Name
+                            </label>
+                            <div class="input-group">
+                                <span class="input-group-text"><i class="fas fa-user"></i></span>
+                                <input type="text" class="form-control" id="fNameProfile" 
+                                       placeholder="Enter your first name" required>
+                            </div>
+                        </div>
+
+                        <div class="col-md-6 form-section fade-in">
+                            <label for="lNameProfile" class="form-label">
+                                <i class="fas fa-user"></i>Last Name
+                            </label>
+                            <div class="input-group">
+                                <span class="input-group-text"><i class="fas fa-user"></i></span>
+                                <input type="text" class="form-control" id="lNameProfile" 
+                                       placeholder="Enter your last name" required>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6 form-section fade-in">
+                            <label for="schoolIdProfile" class="form-label">
+                                <i class="fas fa-id-card"></i>School ID
+                            </label>
+                            <div class="input-group">
+                                <span class="input-group-text"><i class="fas fa-id-card"></i></span>
+                                <input type="text" class="form-control" id="schoolIdProfile" 
+                                       placeholder="Enter your school ID" required>
+                            </div>
+                        </div>
+
+                        <div class="col-md-6 form-section fade-in">
+                            <label for="programProfile" class="form-label">
+                                <i class="fas fa-graduation-cap"></i>Program
+                            </label>
+                            <div class="input-group">
+                                <span class="input-group-text"><i class="fas fa-graduation-cap"></i></span>
+                                <select class="form-select" id="programProfile" required>
+                                    <option value="">Select your program</option>
+                                    <option value="Computer Science">Computer Science</option>
+                                    <option value="Business Administration">Business Administration</option>
+                                    <option value="Engineering">Engineering</option>
+                                    <option value="Medicine">Medicine</option>
+                                    <option value="Arts">Arts</option>
+                                    <option value="Digital Marketing">Digital Marketing</option>
+                                    <option value="Web Development">Web Development</option>
+                                    <option value="Business Law">Business Law</option>
+                                    <option value="Other">Other</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Action Buttons -->
+                    <div class="action-buttons fade-in">
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-save me-2"></i>Save Changes
+                        </button>
+                        <a href="homepage.html" class="btn btn-outline-primary">
+                            <i class="fas fa-arrow-left me-2"></i>Back to Dashboard
+                        </a>
+                    </div>
+                </form>
+            </div>
+
+            <!-- Information Card -->
+            <div class="profile-card fade-in">
+                <div class="profile-header">
+                    <h2><i class="fas fa-info-circle me-3"></i>Profile Information</h2>
+                    <p>Your profile details will be visible to authorized users only</p>
+                </div>
+                
+                <div class="row">
+                    <div class="col-md-6 fade-in">
+                        <div class="mb-4">
+                            <h5><i class="fas fa-shield-alt text-primary me-2"></i>Privacy & Security</h5>
+                            <p class="text-muted">Your personal information is securely stored and encrypted. Only authorized personnel can access your academic records.</p>
+                        </div>
+                    </div>
+                    <div class="col-md-6 fade-in">
+                        <div class="mb-4">
+                            <h5><i class="fas fa-sync-alt text-success me-2"></i>Updates & Changes</h5>
+                            <p class="text-muted">Profile updates are reflected immediately across all systems. You can change your information at any time.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- JavaScript for animations and interactions -->
+    <script>
+        // Animation for elements when they come into view
+        function isInViewport(el) {
+            const rect = el.getBoundingClientRect();
+            return (
+                rect.top < (window.innerHeight || document.documentElement.clientHeight) * 0.9
+            );
+        }
+
+        function animateElements() {
+            const elements = document.querySelectorAll('.fade-in');
+            elements.forEach(el => {
+                if (isInViewport(el)) {
+                    el.classList.add('visible');
+                }
+            });
+        }
+
+        // Initialize animations
+        window.addEventListener('load', animateElements);
+        window.addEventListener('scroll', animateElements);
+
+        // Avatar preview functionality
+        document.getElementById('avatarProfile').addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    document.getElementById('avatarPreviewProfile').src = e.target.result;
+                };
+                reader.readAsDataURL(file);
+            }
+        });
+
+        // File upload container click handler
+        document.querySelector('.file-upload-container').addEventListener('click', function() {
+            document.getElementById('avatarProfile').click();
+        });
+
+        // Form submission - kept simple to not interfere with profile.js
+        document.getElementById('profileForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            // Your profile.js will handle the actual submission
+        });
+
+        // Active menu highlighting
+        document.addEventListener('DOMContentLoaded', function() {
+            const currentPage = window.location.pathname.split('/').pop();
+            const menuItems = document.querySelectorAll('.menu-item');
+            
+            menuItems.forEach(item => {
+                const href = item.getAttribute('href');
+                if (href === currentPage || (currentPage === 'profile.html' && href.includes('profile'))) {
+                    item.classList.add('active');
+                } else {
+                    item.classList.remove('active');
+                }
+            });
+        });
+    </script>
+
+    <!-- Your Firebase profile.js - This remains untouched -->
+    <script type="module" src="profile.js"></script>
+</body>
+</html>

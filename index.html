@@ -1,0 +1,464 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Portal - Login & Register</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        body {
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .navbar-brand {
+            font-weight: 600;
+        }
+        
+        .main-content {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding-top: 20px;
+            padding-bottom: 20px;
+        }
+        
+        .auth-card {
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            border: none;
+            transition: all 0.3s ease;
+        }
+        
+        .auth-card:hover {
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.15);
+        }
+        
+        .card-header {
+            border-radius: 15px 15px 0 0 !important;
+            padding: 1.5rem;
+        }
+        
+        .form-control:focus {
+            border-color: #4c5bd4;
+            box-shadow: 0 0 0 0.25rem rgba(76, 91, 212, 0.25);
+        }
+        
+        .btn-primary {
+            background-color: #4c5bd4;
+            border-color: #4c5bd4;
+        }
+        
+        .btn-primary:hover {
+            background-color: #3a47b3;
+            border-color: #3a47b3;
+        }
+        
+        .btn-outline-primary {
+            color: #4c5bd4;
+            border-color: #4c5bd4;
+        }
+        
+        .btn-outline-primary:hover {
+            background-color: #4c5bd4;
+            border-color: #4c5bd4;
+        }
+        
+        .avatar-preview {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 3px solid #e9ecef;
+            margin-top: 10px;
+        }
+        
+        .demo-credentials {
+            font-size: 0.9rem;
+        }
+        
+        .password-toggle {
+            cursor: pointer;
+        }
+        
+        /* Custom message styling */
+        .messageDiv {
+            padding: 12px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            display: none;
+        }
+        
+        .messageDiv.success {
+            background-color: #d1e7dd;
+            color: #0f5132;
+            border: 1px solid #badbcc;
+            display: block;
+        }
+        
+        .messageDiv.error {
+            background-color: #f8d7da;
+            color: #842029;
+            border: 1px solid #f5c2c7;
+            display: block;
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+        <div class="container">
+            <a class="navbar-brand" href="#">
+                <i class="fas fa-graduation-cap me-2"></i>Student Portal
+            </a>
+            <div class="navbar-nav ms-auto">
+                <button id="showLoginBtn" class="nav-link btn btn-link text-white" style="display: none;">
+                    Login
+                </button>
+                <button id="showRegisterBtn" class="nav-link btn btn-link text-white" style="display: none;">
+                    Register
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="main-content">
+        <div class="container">
+            <!-- Login Form (using your original IDs) -->
+            <div class="row justify-content-center" id="signIn">
+                <div class="col-md-6 col-lg-5">
+                    <div class="card auth-card">
+                        <div class="card-header bg-primary text-white">
+                            <h4 class="mb-0"><i class="fas fa-sign-in-alt me-2"></i>Student Login</h4>
+                        </div>
+                        <div class="card-body p-4">
+                            <form method="post" id="loginForm">
+                                <div id="signInMessage" class="messageDiv" style="display:none;"></div>
+                                
+                                <div class="mb-3">
+                                    <label for="email" class="form-label">Email Address</label>
+                                    <div class="input-group">
+                                        <span class="input-group-text"><i class="fas fa-envelope"></i></span>
+                                        <input type="email" class="form-control" id="email" placeholder=" " required>
+                                    </div>
+                                </div>
+
+                                <div class="mb-3">
+                                    <label for="password" class="form-label">Password</label>
+                                    <div class="input-group">
+                                        <span class="input-group-text"><i class="fas fa-lock"></i></span>
+                                        <input type="password" class="form-control" id="password" placeholder=" " required>
+                                        <button class="btn btn-outline-secondary password-toggle" type="button" id="togglePassword">
+                                            <i class="fas fa-eye"></i>
+                                        </button>
+                                    </div>
+                                </div>
+
+                                <div class="d-flex justify-content-between align-items-center mb-4">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" id="rememberMe">
+                                        <label class="form-check-label" for="rememberMe">
+                                            Remember me
+                                        </label>
+                                    </div>
+                                    <a href="#" class="text-primary" id="forgotPassword">Forgot Password?</a>
+                                </div>
+
+                                <div class="d-grid gap-2">
+                                    <button type="submit" class="btn btn-primary btn-lg" id="submitSignIn">
+                                        <i class="fas fa-sign-in-alt me-2"></i>Login
+                                    </button>
+                                    <button type="button" class="btn btn-outline-primary" id="signUpButton">
+                                        <i class="fas fa-user-plus me-2"></i>Create New Account
+                                    </button>
+                                </div>
+                            </form>
+
+                            <div class="text-center mt-4">
+                                <p class="text-muted">Or login with</p>
+                                <div class="d-flex justify-content-center gap-3">
+                                    <button class="btn btn-outline-danger" id="googleLogin">
+                                        <i class="fab fa-google me-2"></i>Google
+                                    </button>
+                                    <button class="btn btn-outline-dark" id="facebookLogin">
+                                        <i class="fab fa-facebook me-2"></i>Facebook
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="alert alert-info mt-4">
+                        <i class="fas fa-info-circle me-2"></i>
+                        <span class="demo-credentials">Demo Credentials: student@example.com / password123</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Register Form (using your original IDs) -->
+            <div class="row justify-content-center" id="signup" style="display: none;">
+                <div class="col-md-8 col-lg-6">
+                    <div class="card auth-card">
+                        <div class="card-header bg-primary text-white">
+                            <h4 class="mb-0"><i class="fas fa-user-plus me-2"></i>Student Registration</h4>
+                        </div>
+                        <div class="card-body p-4">
+                            <form method="post" enctype="multipart/form-data" id="registerForm">
+                                <div id="signUpMessage" class="messageDiv" style="display:none;"></div>
+                                
+                                <div class="row">
+                                    <div class="col-md-6 mb-3">
+                                        <label for="fName" class="form-label">First Name *</label>
+                                        <div class="input-group">
+                                            <span class="input-group-text"><i class="fas fa-user"></i></span>
+                                            <input type="text" class="form-control" id="fName" placeholder=" " required>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6 mb-3">
+                                        <label for="lName" class="form-label">Last Name *</label>
+                                        <div class="input-group">
+                                            <span class="input-group-text"><i class="fas fa-user"></i></span>
+                                            <input type="text" class="form-control" id="lName" placeholder=" " required>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-md-6 mb-3">
+                                        <label for="schoolId" class="form-label">School ID *</label>
+                                        <div class="input-group">
+                                            <span class="input-group-text"><i class="fas fa-id-card"></i></span>
+                                            <input type="text" class="form-control" id="schoolId" placeholder=" " required>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6 mb-3">
+                                        <label for="program" class="form-label">Program *</label>
+                                        <div class="input-group">
+                                            <span class="input-group-text"><i class="fas fa-graduation-cap"></i></span>
+                                            <select class="form-select" id="program" required>
+                                                <option value="">Select Program</option>
+                                                <option value="Computer Science">Computer Science</option>
+                                                <option value="Business Administration">Business Administration</option>
+                                                <option value="Engineering">Engineering</option>
+                                                <option value="Medicine">Medicine</option>
+                                                <option value="Arts">Arts</option>
+                                                <option value="Other">Other</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="mb-3">
+                                    <label for="rEmail" class="form-label">Email Address *</label>
+                                    <div class="input-group">
+                                        <span class="input-group-text"><i class="fas fa-envelope"></i></span>
+                                        <input type="email" class="form-control" id="rEmail" placeholder=" " required>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-md-6 mb-3">
+                                        <label for="rPassword" class="form-label">Password *</label>
+                                        <div class="input-group">
+                                            <span class="input-group-text"><i class="fas fa-lock"></i></span>
+                                            <input type="password" class="form-control" id="rPassword" placeholder=" " required>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6 mb-3">
+                                        <label for="confirmPassword" class="form-label">Confirm Password *</label>
+                                        <div class="input-group">
+                                            <span class="input-group-text"><i class="fas fa-lock"></i></span>
+                                            <input type="password" class="form-control" id="confirmPassword" placeholder=" " required>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="mb-3">
+                                    <label for="avatarProfile" class="form-label">Profile Picture (Optional)</label>
+                                    <input type="file" class="form-control" id="avatarProfile" accept="image/*">
+                                    <div class="form-text">Upload a profile picture (Max 2MB, JPG/PNG)</div>
+                                    <div class="mt-2">
+                                        <img id="avatarPreview" src="https://via.placeholder.com/100x100?text=Avatar" 
+                                             class="avatar-preview" alt="Avatar Preview">
+                                    </div>
+                                </div>
+
+                                <div class="form-check mb-4">
+                                    <input class="form-check-input" type="checkbox" id="terms" required>
+                                    <label class="form-check-label" for="terms">
+                                        I agree to the <a href="#" class="text-primary">Terms and Conditions</a>
+                                    </label>
+                                </div>
+
+                                <div class="d-grid gap-2">
+                                    <button type="submit" class="btn btn-primary btn-lg" id="submitSignUp">
+                                        <i class="fas fa-user-plus me-2"></i>Register Account
+                                    </button>
+                                    <button type="button" class="btn btn-outline-primary" id="signInButton">
+                                        Already have an account? Login here
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Forgot Password Modal -->
+    <div class="modal fade" id="forgotPasswordModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Reset Password</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <p>Enter your email address and we'll send you a link to reset your password.</p>
+                    <div class="mb-3">
+                        <label for="resetEmail" class="form-label">Email Address</label>
+                        <input type="email" class="form-control" id="resetEmail">
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-primary" id="sendResetLink">Send Reset Link</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Firebase & Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Firebase -->
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-storage.js"></script>
+    <!-- Your Firebase config -->
+    <script type="module" src="firebaseauth.js"></script>
+
+    <script>
+        // MINIMAL JavaScript - only for UI interactions, NOT form submission
+        
+        // DOM Elements - using YOUR original element IDs
+        const loginSection = document.getElementById('signIn');
+        const registerSection = document.getElementById('signup');
+        const showLoginBtn = document.getElementById('showLoginBtn');
+        const showRegisterBtn = document.getElementById('showRegisterBtn');
+        const signUpButton = document.getElementById('signUpButton');
+        const signInButton = document.getElementById('signInButton');
+        
+        // Check URL hash on page load
+        window.addEventListener('DOMContentLoaded', () => {
+            const hash = window.location.hash;
+            
+            if (hash === '#register') {
+                showRegisterForm();
+            } else {
+                showLoginForm();
+            }
+        });
+        
+        // Function to show login form
+        function showLoginForm() {
+            loginSection.style.display = 'block';
+            registerSection.style.display = 'none';
+            showLoginBtn.style.display = 'none';
+            showRegisterBtn.style.display = 'inline';
+            window.history.replaceState(null, null, '#login');
+        }
+        
+        // Function to show register form
+        function showRegisterForm() {
+            loginSection.style.display = 'none';
+            registerSection.style.display = 'block';
+            showLoginBtn.style.display = 'inline';
+            showRegisterBtn.style.display = 'none';
+            window.history.replaceState(null, null, '#register');
+        }
+        
+        // Event Listeners for form switching ONLY
+        showLoginBtn.addEventListener('click', showLoginForm);
+        showRegisterBtn.addEventListener('click', showRegisterForm);
+        signUpButton.addEventListener('click', showRegisterForm);
+        signInButton.addEventListener('click', showLoginForm);
+        
+        // Handle browser back/forward buttons
+        window.addEventListener('hashchange', () => {
+            const newHash = window.location.hash;
+            if (newHash === '#register') {
+                showRegisterForm();
+            } else {
+                showLoginForm();
+            }
+        });
+        
+        // Toggle password visibility for login (UI only)
+        document.getElementById('togglePassword').addEventListener('click', function() {
+            const passwordInput = document.getElementById('password');
+            const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
+            passwordInput.setAttribute('type', type);
+            this.innerHTML = type === 'password' ? '<i class="fas fa-eye"></i>' : '<i class="fas fa-eye-slash"></i>';
+        });
+        
+        // Avatar preview for register (UI only)
+        document.getElementById('avatarProfile').addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    document.getElementById('avatarPreview').src = e.target.result;
+                };
+                reader.readAsDataURL(file);
+            }
+        });
+        
+        // Forgot password modal (UI only)
+        document.getElementById('forgotPassword').addEventListener('click', function(e) {
+            e.preventDefault();
+            const modal = new bootstrap.Modal(document.getElementById('forgotPasswordModal'));
+            modal.show();
+        });
+        
+        // Send reset link (UI only - your firebaseauth.js should handle actual reset)
+        document.getElementById('sendResetLink').addEventListener('click', function() {
+            const email = document.getElementById('resetEmail').value;
+            if (email) {
+                firebase.auth().sendPasswordResetEmail(email)
+                    .then(() => {
+                        alert('Password reset email sent! Check your inbox.');
+                        const modal = bootstrap.Modal.getInstance(document.getElementById('forgotPasswordModal'));
+                        modal.hide();
+                    })
+                    .catch(error => {
+                        alert('Error: ' + error.message);
+                    });
+            }
+        });
+        
+        // IMPORTANT: REMOVED ALL FORM SUBMISSION HANDLERS
+        // Your firebaseauth.js will handle form submissions
+        // REMOVED: loginForm submit event listener
+        // REMOVED: registerForm submit event listener  
+        // REMOVED: social login button event listeners (except UI)
+        
+        // Only keep UI-related social button listeners
+        document.getElementById('googleLogin').addEventListener('click', function() {
+            console.log('Google login button clicked - UI only');
+        });
+        
+        document.getElementById('facebookLogin').addEventListener('click', function() {
+            console.log('Facebook login button clicked - UI only');
+        });
+    </script>
+</body>
+</html>
