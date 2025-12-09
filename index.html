@@ -9,12 +9,6 @@
     <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
-        <script>
-  // Redirect root to mainpage.html if user opens /
-  if (window.location.pathname === "/" || window.location.pathname.endsWith("index.html")) {
-      window.location.replace("mainpage.html#login");
-  }
-</script>
         body {
             background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
             min-height: 100vh;
@@ -117,6 +111,13 @@
     </style>
 </head>
 <body>
+<script>
+  // Only redirect if we are on root or index.html
+  const path = window.location.pathname;
+  if (path === "/" || path.endsWith("index.html")) {
+      window.location.href = "mainpage.html#login";
+  }
+</script>
     <!-- Navigation -->
     <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
         <div class="container">
