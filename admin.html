@@ -396,40 +396,48 @@ overlay.addEventListener("click", () => {
 });  
 
 //SEARCH JS (unchanged functionality)   
-let allStudents = [];  
-function storeStudentsData() {  
-  const rows = document.querySelectorAll('#studentsTableBody tr');  
-  allStudents=[]; rows.forEach(row=>{  
-    if(row.cells.length>=6){  
-      allStudents.push({  
-        row,  
-        name:(row.cells[1].textContent).toLowerCase(),  
-        email:(row.cells[2].textContent).toLowerCase(),  
-        schoolId:(row.cells[3].textContent).toLowerCase(),  
-        program:(row.cells[4].textContent).toLowerCase(),  
-        role:(row.cells[5].textContent).toLowerCase()  
-      });  
-    }  
-  });  
-  updateSearchResultsCount();  
-}  
-function searchStudents(q) {  
-  if(!q.trim()){ allStudents.forEach(s=>s.row.style.display=""); updateSearchResultsCount(); return;}  
-  const term=q.toLowerCase(); let c=0;  
-  allStudents.forEach(s=>{  
-    const m=s.name.includes(term)||s.email.includes(term)||s.schoolId.includes(term)||s.program.includes(term)||s.role.includes(term);  
-    s.row.style.display=m?"":"none"; if(m)c++;  
-  });  
-  document.getElementById('searchResultsCount').textContent=c;  
-}  
-function updateSearchResultsCount(){  
-  const visible=document.querySelectorAll('#studentsTableBody tr:not([style*="display: none"])');  
-  document.getElementById('searchResultsCount').textContent=visible.length;  
-}  
-document.addEventListener("DOMContentLoaded",()=>{  
-  const si=document.getElementById("searchInput");  
-  if(si){ si.addEventListener("input",()=>searchStudents(si.value)); }  
-});  
+let allStudents = [];
+function storeStudentsData() {
+  const rows = document.querySelectorAll('#studentsTableBody tr');
+  allStudents = [];
+  rows.forEach(row => {
+    if (row.cells.length >= 6) {
+      allStudents.push({
+        row,
+        name: (row.cells[1].textContent).toLowerCase(),
+        email: (row.cells[2].textContent).toLowerCase(),
+        schoolId: (row.cells[3].textContent).toLowerCase(),
+        program: (row.cells[4].textContent).toLowerCase(),
+        role: (row.cells[5].textContent).toLowerCase()
+      });
+    }
+  });
+  updateSearchResultsCount();
+}
+
+function searchStudents(q) {
+  if (!q.trim()) {
+    allStudents.forEach(s => s.row.style.display = "");
+    updateSearchResultsCount();
+    return;
+  }
+  const term = q.toLowerCase(); let c = 0;
+  allStudents.forEach(s => {
+    const m = s.name.includes(term) || s.email.includes(term) || s.schoolId.includes(term) || s.program.includes(term) || s.role.includes(term);
+    s.row.style.display = m ? "" : "none"; if (m) c++;
+  });
+  document.getElementById('searchResultsCount').textContent = c;
+}
+
+function updateSearchResultsCount() {
+  const visible = document.querySelectorAll('#studentsTableBody tr:not([style*="display: none"])');
+  document.getElementById('searchResultsCount').textContent = visible.length;
+}
+
+document.addEventListener("DOMContentLoaded", () => {
+  const si = document.getElementById("searchInput");
+  if (si) si.addEventListener("input", () => searchStudents(si.value));
+});
 </script>  
 </body>  
 </html>
