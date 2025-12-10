@@ -150,12 +150,63 @@ body {
 #studentsTable th,#studentsTable td { padding:12px 15px; border-bottom:1px solid #e5e7eb; }  
 #studentsTable img { width:50px; height:50px; border-radius:50%; object-fit:cover; }  
   
-/* ===== BUTTONS ===== */
-.edit-btn { background: var(--secondary); color:white; border:none; padding:6px 12px; border-radius:6px; cursor:pointer; }
-.edit-btn:hover { background:#0a8d6b; }
+/* BUTTONS - CRITICAL FOR JS */  
 
-.delete-btn { background:var(--danger); color:white; border:none; padding:6px 12px; border-radius:6px; cursor:pointer; }
-.delete-btn:hover { background:#c13532; }
+.edit-btn, .delete-btn {  
+
+  padding: 6px 12px;  
+
+  border-radius: 6px;  
+
+  border: none;  
+
+  font-weight: 500;  
+
+  cursor: pointer;  
+
+  transition: 0.2s;  
+
+  margin-right: 5px;  
+
+}  
+
+  
+
+.edit-btn {  
+
+  background: rgba(79, 70, 229, 0.1);  
+
+  color: var(--primary);  
+
+}  
+
+  
+
+.edit-btn:hover {  
+
+  background: rgba(79, 70, 229, 0.2);  
+
+}  
+
+  
+
+.delete-btn {  
+
+  background: rgba(239, 68, 68, 0.1);  
+
+  color: var(--danger);  
+
+}  
+
+  
+
+.delete-btn:hover {  
+
+  background: rgba(239, 68, 68, 0.2);  
+
+}  
+
+  
 
 /* ===== MODAL ===== */
 .modal-backdrop { display:none; position:fixed; inset:0; background:rgba(0,0,0,0.45); z-index:40; align-items:center; justify-content:center; }
@@ -323,7 +374,8 @@ overlay.addEventListener("click", () => {
   sidebar.classList.remove("show");  
   overlay.classList.remove("show");  
 });  
-</script>  <!-- SEARCH JS (unchanged functionality) -->  <script>  
+
+<!-- SEARCH JS (unchanged functionality) -->   
 let allStudents = [];  
 function storeStudentsData() {  
   const rows = document.querySelectorAll('#studentsTableBody tr');  
