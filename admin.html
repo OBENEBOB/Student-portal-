@@ -396,9 +396,7 @@ overlay.addEventListener("click", () => {
 });  
 </script>
 <script>
-<!-- SEARCH FUNCTIONALITY - WON'T BREAK admin.js -->
-<script>
-// Search functionality
+// SEARCH FUNCTIONALITY - WON'T BREAK admin.js
 
 let allStudents = [];
 
@@ -409,26 +407,25 @@ const originalLoadStudents = window.loadStudents;
 if (originalLoadStudents) {
   window.loadStudents = async function() {
     await originalLoadStudents();
-    // Store students data for search
-    storeStudentsData();
+    storeStudentsData(); // Save student rows for searching
   };
 }
 
+// Save table rows to array
 function storeStudentsData() {
   const rows = document.querySelectorAll('#studentsTableBody tr');
   allStudents = [];
 
   rows.forEach(row => {
     if (row.cells.length >= 6 && !row.id.includes("loadingRow")) {
-      const student = {
-        row: row,
-        name: (row.cells[1]?.textContent || '').toLowerCase(),
-        email: (row.cells[2]?.textContent || '').toLowerCase(),
-        schoolId: (row.cells[3]?.textContent || '').toLowerCase(),
-        program: (row.cells[4]?.textContent || '').toLowerCase(),
-        role: (row.cells[5]?.textContent || '').toLowerCase()
-      };
-      allStudents.push(student);
+      allStudents.push({
+        row,
+        name: row.cells[1].textContent.toLowerCase(),
+        email: row.cells[2].textContent.toLowerCase(),
+        schoolId: row.cells[3].textContent.toLowerCase(),
+        program: row.cells[4].textContent.toLowerCase(),
+        role: row.cells[5].textContent.toLowerCase()
+      });
     }
   });
 
@@ -437,47 +434,38 @@ function storeStudentsData() {
 
 // Search function
 function searchStudents(query) {
-  if (!query.trim()) {
-    // Show all students
-    allStudents.forEach(student => {
-      student.row.style.display = '';
-    });
-    updateSearchResultsCount();
-    return;
-  }
-
-  const searchTerm = query.toLowerCase();
+  query = query.toLowerCase().trim();
   let visibleCount = 0;
 
   allStudents.forEach(student => {
-    const matches =
-      student.name.includes(searchTerm) ||
-      student.email.includes(searchTerm) ||
-      student.schoolId.includes(searchTerm) ||
-      student.program.includes(searchTerm) ||
-      student.role.includes(searchTerm);
+    const match =
+      student.name.includes(query) ||
+      student.email.includes(query) ||
+      student.schoolId.includes(query) ||
+      student.program.includes(query) ||
+      student.role.includes(query);
 
-    student.row.style.display = matches ? '' : 'none';
-    if (matches) visibleCount++;
+    student.row.style.display = match || !query ? '' : 'none';
+
+    if (match || !query) visibleCount++;
   });
 
-  document.getElementById('searchResultsCount').textContent = visibleCount;
+  document.getElementById("searchResultsCount").textContent = visibleCount;
 }
 
+// Update results counter
 function updateSearchResultsCount() {
-  const visibleRows = document.querySelectorAll('#studentsTableBody tr:not([style*="display: none"])');
-  document.getElementById('searchResultsCount').textContent = visibleRows.length;
+  const visible = [...document.querySelectorAll('#studentsTableBody tr')]
+    .filter(row => row.style.display !== "none");
+  document.getElementById("searchResultsCount").textContent = visible.length;
 }
 
-// Add search input listener
-document.addEventListener('DOMContentLoaded', function() {
-  const searchInput = document.getElementById('searchInput');
-  if (searchInput) {
-    searchInput.addEventListener('input', function() {
-      searchStudents(this.value);
-    });
-  }
+// Add listener after page loads
+document.addEventListener("DOMContentLoaded", () => {
+  const searchInput = document.getElementById("searchInput");
+  searchInput.addEventListener("input", e => searchStudents(e.target.value));
 });
+
 </script>  
 </body>  
 </html>
