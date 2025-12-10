@@ -438,6 +438,9 @@ document.addEventListener("DOMContentLoaded", () => {
   const si = document.getElementById("searchInput");
   if (si) si.addEventListener("input", () => searchStudents(si.value));
 });
+// In case admin.js loads students after DOMContentLoaded, call once after a short delay
+  setTimeout(storeStudentsData, 1000);
+});
 </script>  
 </body>  
 </html>
