@@ -395,77 +395,101 @@ overlay.addEventListener("click", () => {
   overlay.classList.remove("show");  
 });  
 </script>
+<!-- Robust search functionality — safe to use with admin.js module (no changes needed) -->
 <script>
-// SEARCH FUNCTIONALITY - WON'T BREAK admin.js
+(function(){
+  // Internal array of student snapshots
+  let allStudents = [];
 
-let allStudents = [];
+  // Grab DOM elements
+  const tableBody = document.getElementById('studentsTableBody');
+  const searchInput = document.getElementById('searchInput');
+  const resultsCountEl = document.getElementById('searchResultsCount');
 
-// Store reference to original admin.js loadStudents function
-const originalLoadStudents = window.loadStudents;
+  if (!tableBody || !searchInput || !resultsCountEl) {
+    // If anything is missing, stop and log — will not throw errors
+    console.warn('Search script: required DOM elements not found (tableBody / searchInput / searchResultsCount).');
+    return;
+  }
 
-// Override loadStudents to store student data
-if (originalLoadStudents) {
-  window.loadStudents = async function() {
-    await originalLoadStudents();
-    storeStudentsData(); // Save student rows for searching
-  };
-}
+  // Build the index from current table rows (ignores loadingRow)
+  function storeStudentsData() {
+    const rows = Array.from(tableBody.querySelectorAll('tr'))
+      .filter(r => !(r.id && r.id.includes('loadingRow'))); // ignore loading row
 
-// Save table rows to array
-function storeStudentsData() {
-  const rows = document.querySelectorAll('#studentsTableBody tr');
-  allStudents = [];
-
-  rows.forEach(row => {
-    if (row.cells.length >= 6 && !row.id.includes("loadingRow")) {
-      allStudents.push({
+    allStudents = rows.map(row => {
+      const cells = row.cells;
+      return {
         row,
-        name: row.cells[1].textContent.toLowerCase(),
-        email: row.cells[2].textContent.toLowerCase(),
-        schoolId: row.cells[3].textContent.toLowerCase(),
-        program: row.cells[4].textContent.toLowerCase(),
-        role: row.cells[5].textContent.toLowerCase()
-      });
+        name: (cells[1]?.textContent || '').toLowerCase(),
+        email: (cells[2]?.textContent || '').toLowerCase(),
+        schoolId: (cells[3]?.textContent || '').toLowerCase(),
+        program: (cells[4]?.textContent || '').toLowerCase(),
+        role: (cells[5]?.textContent || '').toLowerCase()
+      };
+    });
+
+    updateSearchResultsCount(); // refresh count
+  }
+
+  // Filter rows using query
+  function searchStudents(query) {
+    const q = (query || '').toLowerCase().trim();
+    if (!q) {
+      allStudents.forEach(s => s.row.style.display = '');
+      updateSearchResultsCount();
+      return;
     }
+
+    let visibleCount = 0;
+    allStudents.forEach(s => {
+      const match =
+        s.name.includes(q) ||
+        s.email.includes(q) ||
+        s.schoolId.includes(q) ||
+        s.program.includes(q) ||
+        s.role.includes(q);
+      s.row.style.display = match ? '' : 'none';
+      if (match) visibleCount++;
+    });
+    resultsCountEl.textContent = visibleCount;
+  }
+
+  function updateSearchResultsCount() {
+    const visible = Array.from(tableBody.querySelectorAll('tr'))
+      .filter(r => r.style.display !== 'none' && !(r.id && r.id.includes('loadingRow')));
+    resultsCountEl.textContent = visible.length;
+  }
+
+  // Observe table body for changes (rows added/removed/edited)
+  const mo = new MutationObserver((mutations) => {
+    // small debounce — update after batch changes
+    clearTimeout(window.__storeStudentsDebounce);
+    window.__storeStudentsDebounce = setTimeout(storeStudentsData, 80);
   });
 
-  updateSearchResultsCount();
-}
+  mo.observe(tableBody, { childList: true, subtree: true, characterData: true });
 
-// Search function
-function searchStudents(query) {
-  query = query.toLowerCase().trim();
-  let visibleCount = 0;
-
-  allStudents.forEach(student => {
-    const match =
-      student.name.includes(query) ||
-      student.email.includes(query) ||
-      student.schoolId.includes(query) ||
-      student.program.includes(query) ||
-      student.role.includes(query);
-
-    student.row.style.display = match || !query ? '' : 'none';
-
-    if (match || !query) visibleCount++;
+  // Attach listener for search input
+  searchInput.addEventListener('input', (e) => {
+    searchStudents(e.target.value);
   });
 
-  document.getElementById("searchResultsCount").textContent = visibleCount;
-}
+  // Initial populate:
+  // 1) try immediately (in case rows are already present)
+  // 2) also attempt again after short delay (in case admin.js loads students a bit later)
+  storeStudentsData();
+  setTimeout(storeStudentsData, 700);
+  // also a fallback after 2s if needed
+  setTimeout(storeStudentsData, 2000);
 
-// Update results counter
-function updateSearchResultsCount() {
-  const visible = [...document.querySelectorAll('#studentsTableBody tr')]
-    .filter(row => row.style.display !== "none");
-  document.getElementById("searchResultsCount").textContent = visible.length;
-}
-
-// Add listener after page loads
-document.addEventListener("DOMContentLoaded", () => {
-  const searchInput = document.getElementById("searchInput");
-  searchInput.addEventListener("input", e => searchStudents(e.target.value));
-});
-
-</script>  
+  // Expose helpers to window for debugging (optional)
+  window.__adminSearch = {
+    storeStudentsData,
+    searchStudents,
+    allStudents
+  };
+})();
+</script>
 </body>  
 </html>
