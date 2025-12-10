@@ -395,191 +395,88 @@ overlay.addEventListener("click", () => {
   overlay.classList.remove("show");  
 });  
 </script>
-//SEARCH JS (unchanged functionality)   
-<--SEARCH FUNCTIONALITY - WON'T BREAK admin.js -->  <script>  // Search functionality
+<!-- SEARCH FUNCTIONALITY - WON'T BREAK admin.js -->
+<script>
+// Search functionality
 
 let allStudents = [];
 
 // Store reference to original admin.js loadStudents function
-
 const originalLoadStudents = window.loadStudents;
 
 // Override loadStudents to store student data
-
 if (originalLoadStudents) {
-
-window.loadStudents = async function() {
-
-await originalLoadStudents();    
-
-// Store students data for search    
-
-storeStudentsData();
-
-};
-
+  window.loadStudents = async function() {
+    await originalLoadStudents();
+    // Store students data for search
+    storeStudentsData();
+  };
 }
 
 function storeStudentsData() {
+  const rows = document.querySelectorAll('#studentsTableBody tr');
+  allStudents = [];
 
-const rows = document.querySelectorAll('#studentsTableBody tr');
+  rows.forEach(row => {
+    if (row.cells.length >= 6 && !row.id.includes("loadingRow")) {
+      const student = {
+        row: row,
+        name: (row.cells[1]?.textContent || '').toLowerCase(),
+        email: (row.cells[2]?.textContent || '').toLowerCase(),
+        schoolId: (row.cells[3]?.textContent || '').toLowerCase(),
+        program: (row.cells[4]?.textContent || '').toLowerCase(),
+        role: (row.cells[5]?.textContent || '').toLowerCase()
+      };
+      allStudents.push(student);
+    }
+  });
 
-allStudents = [];
-
-rows.forEach(row => {
-
-if (row.cells.length >= 6) {    
-
-  const student = {    
-
-    row: row,    
-
-    name: (row.cells[1]?.textContent || '').toLowerCase(),    
-
-    email: (row.cells[2]?.textContent || '').toLowerCase(),    
-
-    schoolId: (row.cells[3]?.textContent || '').toLowerCase(),    
-
-    program: (row.cells[4]?.textContent || '').toLowerCase(),    
-
-    role: (row.cells[5]?.textContent || '').toLowerCase()    
-
-  };    
-
-  allStudents.push(student);    
-
-}
-
-});
-
-updateSearchResultsCount();
-
+  updateSearchResultsCount();
 }
 
 // Search function
-
 function searchStudents(query) {
+  if (!query.trim()) {
+    // Show all students
+    allStudents.forEach(student => {
+      student.row.style.display = '';
+    });
+    updateSearchResultsCount();
+    return;
+  }
 
-if (!query.trim()) {
+  const searchTerm = query.toLowerCase();
+  let visibleCount = 0;
 
-// Show all students    
+  allStudents.forEach(student => {
+    const matches =
+      student.name.includes(searchTerm) ||
+      student.email.includes(searchTerm) ||
+      student.schoolId.includes(searchTerm) ||
+      student.program.includes(searchTerm) ||
+      student.role.includes(searchTerm);
 
-allStudents.forEach(student => {    
+    student.row.style.display = matches ? '' : 'none';
+    if (matches) visibleCount++;
+  });
 
-  student.row.style.display = '';    
-
-});    
-
-updateSearchResultsCount();    
-
-return;
-
-}
-
-const searchTerm = query.toLowerCase();
-
-let visibleCount = 0;
-
-allStudents.forEach(student => {
-
-const matches =     
-
-  student.name.includes(searchTerm) ||    
-
-  student.email.includes(searchTerm) ||    
-
-  student.schoolId.includes(searchTerm) ||    
-
-  student.program.includes(searchTerm) ||    
-
-  student.role.includes(searchTerm);    
-
-    
-
-student.row.style.display = matches ? '' : 'none';    
-
-if (matches) visibleCount++;
-
-});
-
-document.getElementById('searchResultsCount').textContent = visibleCount;
-
+  document.getElementById('searchResultsCount').textContent = visibleCount;
 }
 
 function updateSearchResultsCount() {
-
-const visibleRows = document.querySelectorAll('#studentsTableBody tr:not([style*="display: none"])');
-
-document.getElementById('searchResultsCount').textContent = visibleRows.length;
-
+  const visibleRows = document.querySelectorAll('#studentsTableBody tr:not([style*="display: none"])');
+  document.getElementById('searchResultsCount').textContent = visibleRows.length;
 }
 
 // Add search input listener
-
 document.addEventListener('DOMContentLoaded', function() {
-
-const searchInput = document.getElementById('searchInput');
-
-if (searchInput) {
-
-searchInput.addEventListener('input', function() {    
-
-  searchStudents(this.value);    
-
+  const searchInput = document.getElementById('searchInput');
+  if (searchInput) {
+    searchInput.addEventListener('input', function() {
+      searchStudents(this.value);
+    });
+  }
 });
-
-}
-
-// Update student count whenever table changes
-
-const observer = new MutationObserver(function() {
-
-storeStudentsData();
-
-});
-
-const tableBody = document.getElementById('studentsTableBody');
-
-if (tableBody) {
-
-observer.observe(tableBody, { childList: true, subtree: true });
-
-}
-
-// Initial store after a short delay to allow admin.js to load
-
-setTimeout(storeStudentsData, 1000);
-
-});
-
-// Simple time display (optional)
-
-function updateTime() {
-
-const timeEl = document.createElement('span');
-
-timeEl.id = 'currentTime';
-
-timeEl.style.marginLeft = '10px';
-
-timeEl.style.color = 'var(--gray)';
-
-document.querySelector('.admin-info').appendChild(timeEl);
-
-setInterval(() => {
-
-const now = new Date();    
-
-timeEl.textContent = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-
-}, 1000);
-
-}
-
-// Run after page loads
-
-setTimeout(updateTime, 100);
-
 </script>  
 </body>  
 </html>
