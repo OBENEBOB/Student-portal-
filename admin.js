@@ -221,3 +221,6 @@ document.getElementById("logoutBtn").addEventListener("click", () => {
     window.location.href = "index.html";
   });
 });
+
+// Make loadStudents accessible for search script
+window.loadStudents = loadStudents;
